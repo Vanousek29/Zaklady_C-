@@ -1,0 +1,309 @@
+﻿<Window x:Class="Had3D.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Had 3D" Height="780" Width="1180"
+        MinHeight="520" MinWidth="760"
+        WindowStartupLocation="CenterScreen"
+        Background="#05070D"
+        PreviewKeyDown="Okno_KlavesaDolu"
+        MouseLeftButtonDown="Okno_MysDolu"
+        MouseLeftButtonUp="Okno_MysNahoru"
+        MouseMove="Okno_MysPohyb"
+        MouseWheel="Okno_Kolecko">
+
+    <Window.Resources>
+
+        <!-- maly popisek nad cislem -->
+        <Style x:Key="Popisek" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#6F7D96"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <!-- velke cislo -->
+        <Style x:Key="Hodnota" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#EDF4FF"/>
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="FontSize" Value="27"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,-2,0,0"/>
+        </Style>
+
+        <!-- ramecek okolo jednoho udaje v HUD -->
+        <Style x:Key="RamecStatu" TargetType="Border">
+            <Setter Property="Background" Value="#B20D1322"/>
+            <Setter Property="BorderBrush" Value="#243150"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="18,8"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="MinWidth" Value="92"/>
+        </Style>
+
+        <!-- lehky ramecek na napovedu -->
+        <Style x:Key="RamecHUD" TargetType="Border">
+            <Setter Property="Background" Value="#990B1020"/>
+            <Setter Property="BorderBrush" Value="#1E2940"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="18,8"/>
+        </Style>
+
+        <!-- velky prekryvny panel (menu, pauza, konec hry) -->
+        <Style x:Key="RamecPanelu" TargetType="Border">
+            <Setter Property="Background" Value="#F00A0F1C"/>
+            <Setter Property="BorderBrush" Value="#2B3A5C"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="18"/>
+            <Setter Property="Padding" Value="44,34"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="NadpisPanelu" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F2F7FF"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="34"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="PodtitulPanelu" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#6F7D96"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+
+        <!-- tlacitko v menu -->
+        <Style x:Key="Tlacitko" TargetType="Button">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Background" Value="#18233D"/>
+            <Setter Property="Foreground" Value="#DCE7FF"/>
+            <Setter Property="BorderBrush" Value="#2E4068"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="MinWidth" Value="290"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ram"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="9"
+                                Padding="20,11">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ram" Property="Background" Value="#26355A"/>
+                                <Setter TargetName="ram" Property="BorderBrush" Value="#49C86B"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- hlavni zelene tlacitko -->
+        <Style x:Key="TlacitkoHlavni" TargetType="Button" BasedOn="{StaticResource Tlacitko}">
+            <Setter Property="Background" Value="#1F7A3A"/>
+            <Setter Property="BorderBrush" Value="#3BD163"/>
+            <Setter Property="Foreground" Value="#F4FFF6"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+
+        <!-- popisek radku ve vysledcich -->
+        <Style x:Key="VysledekPopis" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#7A8AA6"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="VysledekCislo" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#EDF4FF"/>
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="FontSize" Value="19"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+        <Grid.Background>
+            <RadialGradientBrush GradientOrigin="0.5,0.35" Center="0.5,0.35"
+                                 RadiusX="0.85" RadiusY="0.85">
+                <GradientStop Color="#141E33" Offset="0"/>
+                <GradientStop Color="#05070D" Offset="1"/>
+            </RadialGradientBrush>
+        </Grid.Background>
+
+        <!-- ===== samotna 3D scena ===== -->
+        <Viewport3D x:Name="viewport" ClipToBounds="True">
+            <Viewport3D.Camera>
+                <PerspectiveCamera x:Name="kamera" FieldOfView="42"
+                                   NearPlaneDistance="0.4" FarPlaneDistance="400"/>
+            </Viewport3D.Camera>
+            <ModelVisual3D x:Name="scenaVisual"/>
+        </Viewport3D>
+
+        <!-- ===== HUD nahore ===== -->
+        <Grid x:Name="hud" VerticalAlignment="Top" Margin="20,18,20,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Border Style="{StaticResource RamecStatu}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Popisek}" Text="SKÓRE"/>
+                        <TextBlock x:Name="textSkore" Style="{StaticResource Hodnota}"
+                                   Foreground="#FFD95C" Text="0"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource RamecStatu}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Popisek}" Text="DÉLKA"/>
+                        <TextBlock x:Name="textDelka" Style="{StaticResource Hodnota}"
+                                   Foreground="#5BE07C" Text="3"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource RamecStatu}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Popisek}" Text="ÚROVEŇ"/>
+                        <TextBlock x:Name="textUroven" Style="{StaticResource Hodnota}" Text="1"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <Border Style="{StaticResource RamecStatu}" HorizontalAlignment="Right" Margin="0">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource Popisek}" Text="REKORD"/>
+                    <TextBlock x:Name="textRekord" Style="{StaticResource Hodnota}"
+                               Foreground="#63D8FF" Text="0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- ===== ukazatel bonusu ===== -->
+        <Border x:Name="panelBonusu" Style="{StaticResource RamecHUD}"
+                VerticalAlignment="Top" HorizontalAlignment="Center"
+                Margin="0,104,0,0" Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="BONUS +50" Foreground="#FFC43D" FontFamily="Segoe UI"
+                           FontSize="11" FontWeight="Bold" VerticalAlignment="Center"
+                           Margin="0,0,12,0"/>
+                <Border Width="150" Height="6" CornerRadius="3" Background="#222C44"
+                        VerticalAlignment="Center">
+                    <Rectangle x:Name="pruhBonusu" HorizontalAlignment="Left"
+                               Width="150" Height="6" RadiusX="3" RadiusY="3" Fill="#FFC43D"/>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <!-- ===== napoveda dole ===== -->
+        <Border x:Name="panelNapovedy" Style="{StaticResource RamecHUD}"
+                VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,18">
+            <TextBlock Foreground="#64728C" FontFamily="Segoe UI" FontSize="12">
+                <Run Text="← ↑ ↓ →" Foreground="#AFC0DC"/>
+                <Run Text=" nebo "/>
+                <Run Text="W A S D" Foreground="#AFC0DC"/>
+                <Run Text="   •   "/>
+                <Run Text="P" Foreground="#AFC0DC"/><Run Text=" pauza"/>
+                <Run Text="   •   táhni myší" /><Run Text=" = otáčet kamerou"/>
+                <Run Text="   •   kolečko" Foreground="#AFC0DC"/><Run Text=" = přiblížení"/>
+                <Run Text="   •   "/>
+                <Run Text="Esc" Foreground="#AFC0DC"/><Run Text=" menu"/>
+            </TextBlock>
+        </Border>
+
+        <!-- ===== menu ===== -->
+        <Border x:Name="panelMenu" Style="{StaticResource RamecPanelu}">
+            <StackPanel>
+                <TextBlock Text="HAD 3D" HorizontalAlignment="Center"
+                           FontFamily="Segoe UI" FontSize="52" FontWeight="Bold"
+                           Foreground="#4CE06F"/>
+                <TextBlock Text="skutečné 3D v C# a WPF" Style="{StaticResource PodtitulPanelu}"
+                           Margin="0,0,0,26"/>
+
+                <Button x:Name="tlacitkoHrat" Style="{StaticResource TlacitkoHlavni}"
+                        Content="ZAČÍT HRÁT   (Enter)" Click="TlacitkoHrat_Klik"/>
+                <Button x:Name="tlacitkoObtiznost" Style="{StaticResource Tlacitko}"
+                        Content="Obtížnost" Click="TlacitkoObtiznost_Klik"/>
+                <Button x:Name="tlacitkoZdi" Style="{StaticResource Tlacitko}"
+                        Content="Průchod zdí" Click="TlacitkoZdi_Klik"/>
+                <Button x:Name="tlacitkoKonec" Style="{StaticResource Tlacitko}"
+                        Content="Ukončit" Click="TlacitkoKonec_Klik"/>
+
+                <TextBlock Style="{StaticResource PodtitulPanelu}" Margin="0,22,0,0"
+                           Text="kameru otáčej myší, Q/E a R/F, přiblížení kolečkem"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ===== pauza ===== -->
+        <Border x:Name="panelPauza" Style="{StaticResource RamecPanelu}" Visibility="Collapsed">
+            <StackPanel>
+                <TextBlock Text="PAUZA" Style="{StaticResource NadpisPanelu}"/>
+                <TextBlock Text="P = pokračovat     Esc = menu"
+                           Style="{StaticResource PodtitulPanelu}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ===== konec hry ===== -->
+        <Border x:Name="panelKonec" Style="{StaticResource RamecPanelu}" Visibility="Collapsed">
+            <StackPanel MinWidth="300">
+                <TextBlock x:Name="textKonecNadpis" Text="KONEC HRY"
+                           Style="{StaticResource NadpisPanelu}" Foreground="#FF6B6B"/>
+                <TextBlock x:Name="textKonecPodtitul" Text="had narazil"
+                           Style="{StaticResource PodtitulPanelu}" Margin="0,4,0,24"/>
+
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Skóre" Style="{StaticResource VysledekPopis}"/>
+                    <TextBlock Grid.Column="1" x:Name="textKonecSkore" Text="0"
+                               Style="{StaticResource VysledekCislo}" Foreground="#FFD95C"/>
+                </Grid>
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Délka hada" Style="{StaticResource VysledekPopis}"/>
+                    <TextBlock Grid.Column="1" x:Name="textKonecDelka" Text="0"
+                               Style="{StaticResource VysledekCislo}" Foreground="#5BE07C"/>
+                </Grid>
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Nejlepší skóre" Style="{StaticResource VysledekPopis}"/>
+                    <TextBlock Grid.Column="1" x:Name="textKonecRekord" Text="0"
+                               Style="{StaticResource VysledekCislo}" Foreground="#63D8FF"/>
+                </Grid>
+
+                <TextBlock x:Name="textNovyRekord" Text="★  NOVÝ REKORD  ★"
+                           HorizontalAlignment="Center" Margin="0,16,0,0"
+                           FontFamily="Segoe UI" FontSize="15" FontWeight="Bold"
+                           Foreground="#FFC43D" Visibility="Collapsed"/>
+
+                <Button Style="{StaticResource TlacitkoHlavni}" Margin="0,22,0,5"
+                        Content="HRÁT ZNOVU   (Enter)" Click="TlacitkoHrat_Klik"/>
+                <Button Style="{StaticResource Tlacitko}"
+                        Content="Zpět do menu   (Esc)" Click="TlacitkoDoMenu_Klik"/>
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</Window>
