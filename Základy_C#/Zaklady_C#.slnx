@@ -3,6 +3,7 @@
   <Project Path="Na co si troufnu/Na co si troufnu.csproj" Id="f5cfab7d-fe3f-44f9-afc0-42d90a86dae2" />
   <Project Path="Papuchan/Papuchan.csproj" />
   <Project Path="Piškvorec/Piškvorec.csproj" />
+  <Project Path="Sbirej, Sbirej/Sbirej, Sbirej.csproj" Id="efb01ce1-2cc3-4828-b53e-480e503c26f7" />
   <Project Path="Zdar-Monogame/Zdar-Monogame.csproj" Id="4925df7c-587b-41c5-86c6-16b95a53d551" />
   <Project Path="Šibenice/Šibenice.csproj" />
 </Solution>
